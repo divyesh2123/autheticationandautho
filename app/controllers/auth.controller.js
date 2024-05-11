@@ -10,22 +10,16 @@ exports.signup = (req, res) => {
       password: bcrypt.hashSync(req.body.password, 8)
     });
   
-    user.save((err, user) => {
-      if (err) {
-        res.status(500).send({ message: err });
-        return;
-      }
+    user.save().then(user => {
+      
   
       if (req.body.roles) {
         Role.find(
           {
             name: { $in: req.body.roles }
-          },
-          (err, roles) => {
-            if (err) {
-              res.status(500).send({ message: err });
-              return;
-            }
+          })
+          .then( roles => {
+           
   
             user.roles = roles.map(role => role._id);
             user.save(err => {
@@ -39,18 +33,12 @@ exports.signup = (req, res) => {
           }
         );
       } else {
-        Role.findOne({ name: "user" }, (err, role) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
+        Role.findOne({ name: "user" }).then(role => {
+         
   
           user.roles = [role._id];
-          user.save(err => {
-            if (err) {
-              res.status(500).send({ message: err });
-              return;
-            }
+          user.save().then(y => {
+           
   
             res.send({ message: "User was registered successfully!" });
           });
