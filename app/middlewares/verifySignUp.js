@@ -10,16 +10,18 @@ checkDuplicateUsernameOrEmail = (req, res, next) => {
       
 
       if(y)
-        {
-      next();
-        }
+       
         {
 
           res.status(500).send({ message: "already exist" });
+          return;
         }
+
+        next();
     })
     .catch((y) => {
       res.status(500).send({ message: "check error" });
+      return;
     });
 };
 
